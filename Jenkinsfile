@@ -5,7 +5,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the source code from your GitHub repository
-                git 'https://github.com/alibekkenny/heroku_test.git'
+                // git 'https://github.com/alibekkenny/heroku_test.git'
+                git branch: "main", url: 'https://github.com/alibekkenny/heroku_test.git'
             }
         }
 
