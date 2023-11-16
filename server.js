@@ -79,7 +79,7 @@ app.use("/api", require(path.join(__dirname, "routes", "api")));
 
 
 
-var port_num = process.env.PORT || 8000;
+var port_num = process.env.PORT || 3000;
 
 app.use(
     '/api-docs',
