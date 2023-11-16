@@ -20,7 +20,7 @@ pipeline {
         stage('Run Project') {
             steps {
                 // Run your Node.js project
-                sh 'npm start'
+                sh 'nohup npm start &'
             }
         }
     }
