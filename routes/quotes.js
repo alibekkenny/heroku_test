@@ -8,9 +8,9 @@ const router = express.Router();
 router
     .route("/")
     .get((req, res) => {
-        https.get("https://quote-garden.herokuapp.com/api/v3/quotes/random?genre=learning", (response) => {
-            // console.log(response.statusCode);
+        https.get("https://api.quotable.io/random", (response) => {
             response.on("data", (data) => {
+                // console.log(data.data);
                 const wData = JSON.parse(data);
                 res.send(wData)
             });

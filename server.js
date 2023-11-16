@@ -3,11 +3,62 @@ const path = require("path");
 const app = express();
 const bodyParser = require("body-parser");
 
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json');
+
+const client = require('prom-client')
+const register = new client.Registry()
+
 app.set("view engine", "ejs");
 app.set("views", "client");
 
 app.use(express.static("client"));
 app.use(bodyParser.json());
+
+// app.use("/metrics", require(path.join(__dirname, "routes", "prometheus")));
+
+
+client.collectDefaultMetrics({ register })
+
+
+// Customized Http Metrics (Optional)
+const httpMetricsLabelNames = ['method', 'path'];
+
+const totalHttpRequestCount = new client.Counter({
+    name: 'nodejs_http_total_count',
+    help: 'Total count of HTTP requests in the Node.js app',
+    labelNames: ['method', 'status'],
+});
+
+const totalHttpRequestDuration = new client.Gauge({
+    name: 'nodejs_http_total_duration',
+    help: 'the last duration or response time of last request',
+    labelNames: httpMetricsLabelNames
+});
+
+register.registerMetric(totalHttpRequestCount);
+
+app.get('/metrics', async (req, res) => {
+    metrics = await register.metrics()
+    res.set('Content-Type', register.contentType);
+    res.send(metrics);
+});
+
+
+app.use((req, res, next) => {
+    console.log('Middleware executed ', res.statusCode);
+    totalHttpRequestCount.inc({
+        method: req.method,
+        status: res.statusCode,
+    });
+    next();
+    // res.status(404).send('Not Found');
+});
+
+
+// app.get('/error', (req, res) => {
+//     res.status(404).send('Not Found');
+// });
 
 app.use("/", require(path.join(__dirname, "routes", "home")));
 app.use("/about", require(path.join(__dirname, "routes", "about")));
@@ -24,13 +75,11 @@ app.use(
     "/subscription",
     require(path.join(__dirname, "routes", "subscription"))
 );
-
-const swaggerUi = require('swagger-ui-express')
-const swaggerDocument = require('./swagger.json');
-
 app.use("/api", require(path.join(__dirname, "routes", "api")));
 
-var port_num = process.env.PORT || 3000;
+
+
+var port_num = process.env.PORT || 8000;
 
 app.use(
     '/api-docs',

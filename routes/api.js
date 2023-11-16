@@ -8,12 +8,12 @@ const ObjectId = require("mongodb").ObjectId;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const uri =
-    "mongodb+srv://aliba:aliba@projects.kfyhm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+    "mongodb+srv://aliba:aliba@cluster1.wfqyfpl.mongodb.net/skillcheck";
 
 const JWT_SECRET =
     "@ALIBEK@SLAVE@fleksml13EC3k2mk@#mlkl@ALIBEK@SLAVE@fmeSM2f4mk2m4@#Krn2k#@ALIBEK@SLAVE@";
 
-router.route("/signup").post(async(req, res) => {
+router.route("/signup").post(async (req, res) => {
     const client = new MongoClient(uri);
     console.log(req.body);
     const { username, email, password } = req.body;
@@ -49,7 +49,7 @@ router.route("/signup").post(async(req, res) => {
     }
 });
 
-router.route("/login").post(async(req, res) => {
+router.route("/login").post(async (req, res) => {
     const client = new MongoClient(uri);
     const { email, password } = req.body;
 
@@ -72,9 +72,9 @@ router.route("/login").post(async(req, res) => {
             // the username, password combination is successful
 
             const token = jwt.sign({
-                    id: user._id,
-                    email: user.email,
-                },
+                id: user._id,
+                email: user.email,
+            },
                 JWT_SECRET
             );
 
@@ -87,7 +87,7 @@ router.route("/login").post(async(req, res) => {
     }
 });
 
-router.route("/subscribe").post(async(req, res) => {
+router.route("/subscribe").post(async (req, res) => {
     const client = new MongoClient(uri);
     const { token } = req.body;
 
