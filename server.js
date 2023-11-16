@@ -56,9 +56,6 @@ app.use((req, res, next) => {
 });
 
 
-// app.get('/error', (req, res) => {
-//     res.status(404).send('Not Found');
-// });
 
 app.use("/", require(path.join(__dirname, "routes", "home")));
 app.use("/about", require(path.join(__dirname, "routes", "about")));
